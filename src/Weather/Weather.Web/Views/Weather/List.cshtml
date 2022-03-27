@@ -69,14 +69,32 @@
 
         <ul class="uk-pagination uk-flex-center" uk-margin>
             @{
+                const int pagesCount = 5;
+                const int firstCenter = 3;
+                int lastCenter = Model.TotalPages - 2;
                 if (Model.CurrentPage > 1)
                 {
                     <li><a href="@GetPageUrl(Model.CurrentPage - 1)"><span uk-pagination-previous></span></a></li>
                 }
-                for (int i = 1; i <= Model.TotalPages; i++)
+                if (Model.TotalPages <= pagesCount)
                 {
-                    string active = "uk-active";
-                    <li class="@active"><a href="@GetPageUrl(i)">@i</a></li>
+                    for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        string active = i == Model.CurrentPage ? "uk-active" : "uk-link-muted";
+                        <li class="@active"><a href="@GetPageUrl(i)">@i</a></li>
+                    }
+                }
+                else
+                {
+                    int i = Model.CurrentPage < firstCenter ? 1 : Model.CurrentPage - 2;
+                    int end = Model.CurrentPage < firstCenter ? pagesCount : Model.CurrentPage + 2;
+                    if (Model.CurrentPage >= lastCenter)
+                        end = Model.TotalPages;
+                    for (; i <= end; i++)
+                    {
+                        string active = i == Model.CurrentPage ? "uk-active" : "uk-link-muted";
+                        <li class="@active"><a href="@GetPageUrl(i)">@i</a></li>
+                    }
                 }
                 if (Model.CurrentPage < Model.TotalPages)
                 {
