@@ -14,18 +14,18 @@ public class WeatherMapModel : IMapModel
     public decimal RelativeHumidity { get; set; }
     [ColumnMap(5, "Td")]
     public decimal DewPoint { get; set; }
-    [ColumnMap(6, "Атм. давление,")]
+    [ColumnMap(6, "Атм. давление")]
     public int AtmosphericPressure { get; set; }
     [ColumnMap(7, "Направление")]
     public string WindDirection { get; set; }
     [ColumnMap(8, "Скорость")]
     public int WindSpeed { get; set; }
-    [ColumnMap(9, "Облачность,")]
+    [ColumnMap(9, "Облачность")]
     public decimal CloudCover { get; set; }
     [ColumnMap(10, "h")]
     public int LowerCloudLimit { get; set; }
     [ColumnMap(11, "VV")]
-    public int? HorizontalVisibility { get; set; }
+    public string HorizontalVisibility { get; set; }
     [ColumnMap(12, "Погодные явления")]
     public string Phenomena { get; set; }
 }

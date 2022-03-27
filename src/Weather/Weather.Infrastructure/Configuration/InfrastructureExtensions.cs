@@ -16,7 +16,8 @@ public static class InfrastructureExtensions
         
         services
             .AddDbContext<Context>(option => option.UseNpgsql(connectionString))
-            .AddScoped(typeof(IEntityRepository<>), typeof(Repository<>));
+            .AddScoped(typeof(IEntityRepository<>), typeof(EntityRepository<>))
+            .AddScoped<IRepository, Repository>();
 
         return services;
     }

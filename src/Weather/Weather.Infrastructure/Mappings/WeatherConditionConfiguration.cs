@@ -35,8 +35,7 @@ public class WeatherConditionConfiguration : IEntityTypeConfiguration<WeatherCon
         
         builder
             .Property(x => x.WindDirection)
-            .HasColumnType("integer")
-            .IsRequired();
+            .HasColumnType("text");
         
         builder
             .Property(x => x.WindSpeed)
@@ -55,7 +54,7 @@ public class WeatherConditionConfiguration : IEntityTypeConfiguration<WeatherCon
         
         builder
             .Property(x => x.HorizontalVisibility)
-            .HasColumnType("integer")
+            .HasColumnType("text")
             .IsRequired(false);
         
         builder
