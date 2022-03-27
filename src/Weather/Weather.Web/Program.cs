@@ -1,7 +1,15 @@
+using Weather.Infrastructure.Configuration;
+using Weather.Services.Configuration;
+using Weather.Web.Services.Configuration;
+
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 
-services.AddControllersWithViews();
+services
+    .AddInfrastructure(builder.Configuration)
+    .AddServices()
+    .AddWebServices()
+    .AddControllersWithViews();
 
 var app = builder.Build();
 
