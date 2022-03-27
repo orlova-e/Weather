@@ -41,7 +41,7 @@ public class LoadWeatherDtoValidator : AbstractValidator<LoadWeatherDto>
         await using var stream = file.OpenReadStream();
         var fileStream = stream as FileStream;
 
-        var error =  _fileService.Validate(fileStream);
+        var error =  _fileService.Validate(fileStream, 4);
         
         if(error is FileReadMessages.Normal)
             return;

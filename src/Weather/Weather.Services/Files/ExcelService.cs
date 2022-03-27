@@ -48,9 +48,11 @@ public class ExcelService<T> : IFileService<T>
         return (entity, mapProperties);
     }
     
-    public FileReadMessages Validate(FileStream file)
+    public FileReadMessages Validate(
+        FileStream file,
+        int headerColumns = 1)
     {
-        return TryReadFile(file, out _);
+        return TryReadFile(file, out _, headerColumns);
     }
 
     public FileReadMessages TryReadFile(
