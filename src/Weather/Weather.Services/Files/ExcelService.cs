@@ -17,14 +17,13 @@ public class ExcelService<T> : IFileService<T>
         _logger = logger;
     }
 
-    private static MethodInfo CachedPropertiesMethod { get; } = typeof(ExcelService<T>)
-        .GetMethod(nameof(ExcelService<T>.GetProperties));
+    private static MethodInfo CachedPropertiesMethod { get; } = 
+        typeof(ExcelService<T>).GetMethod(nameof(ExcelService<T>.GetProperties));
 
-    private static Func<(T, List<PropertyInfo>)> GetPropertiesCachedDelegate { get; } =
-        (Func<(T, List<PropertyInfo>)>) Delegate
-            .CreateDelegate(typeof(Func<(T, List<PropertyInfo>)>), CachedPropertiesMethod);
+    private static Func<MapModelInfo<T>> GetPropertiesCachedDelegate { get; } =
+        (Func<MapModelInfo<T>>) Delegate.CreateDelegate(typeof(Func<MapModelInfo<T>>), CachedPropertiesMethod);
 
-    private static (T, List<PropertyInfo>) GetProperties<T>()
+    private static MapModelInfo<T> GetProperties<T>()
         where T : class, IMapModel, new()
     {
         var entity = new T();
@@ -45,18 +44,22 @@ public class ExcelService<T> : IFileService<T>
             .Select(x => x.Info)
             .ToList();
         
-        return (entity, mapProperties);
+        return new MapModelInfo<T>()
+        {
+            Model = entity,
+            PropertyInfos = mapProperties
+        };
     }
     
     public FileReadMessages Validate(
-        FileStream file,
+        Stream file,
         int headerColumns = 1)
     {
         return TryReadFile(file, out _, headerColumns);
     }
 
     public FileReadMessages TryReadFile(
-        FileStream file,
+        Stream file,
         out IList<T> entities,
         int headerColumns = 1)
     {
@@ -69,8 +72,8 @@ public class ExcelService<T> : IFileService<T>
         }
         catch (Exception exc)
         {
-            _logger.LogError("Couldn't open file '{name}':\n{message}\n{stackTrace}", 
-                file.Name, exc.Message, exc.StackTrace);
+            _logger.LogError("Couldn't open file:\n{message}\n{stackTrace}", 
+                exc.Message, exc.StackTrace);
             
             return FileReadMessages.UnableToOpen;
         }
@@ -86,16 +89,17 @@ public class ExcelService<T> : IFileService<T>
                     if(r <= headerColumns)
                         continue;
 
-                    var (entity, mapProperties) = GetPropertiesCachedDelegate();
+                    // var mapModelInfo = GetPropertiesCachedDelegate();
+                    var mapModelInfo = GetProperties<T>();
 
                     var row = sheet.GetRow(r);
                     var cells = row.Cells;
 
                     for (int c = 0; c < cells.Count; c++)
                     {
-                        var propertyInfo = mapProperties.ElementAt(c);
+                        var propertyInfo = mapModelInfo.PropertyInfos.ElementAt(c);
 
-                        if (cells[c].CellType is CellType.Blank or
+                        if (cells[c].CellType is
                             CellType.Formula or
                             CellType.Unknown or
                             CellType.Error)
@@ -103,20 +107,48 @@ public class ExcelService<T> : IFileService<T>
                             _logger.LogError("Cell value should have a primitive type");
                             return FileReadMessages.UnableToMap;
                         }
+
+                        dynamic propertyValue = cells[c].CellType switch
+                        {
+                            CellType.Boolean => cells[c].BooleanCellValue,
+                            CellType.Numeric => cells[c].NumericCellValue,
+                            CellType.String => cells[c].StringCellValue,
+                            CellType.Blank => propertyInfo.PropertyType.IsValueType ?
+                                Activator.CreateInstance(propertyInfo.PropertyType) :
+                                null,
+                            _ => throw new TypeInitializationException(propertyInfo.PropertyType.FullName, null)
+                        };
+
+                        // dynamic valueWithChangedType;
+                        if (propertyValue is string && 
+                            string.IsNullOrWhiteSpace(propertyValue))
+                        {
+                            propertyValue = propertyInfo.PropertyType.IsValueType
+                                ? Activator.CreateInstance(propertyInfo.PropertyType)
+                                : null;
+                            
+                            propertyInfo.SetValue(mapModelInfo.Model, propertyValue, null);
+                            
+                            continue;
+                        }
                         
-                        var propertyValue = cells[c].StringCellValue;
-                        var valueWithChangedType = Convert.ChangeType(propertyValue, propertyInfo.PropertyType);
-                        propertyInfo.SetValue(entity, valueWithChangedType, null);
+                        // var propertyValue = cells[c].StringCellValue;
+                        var valueWithChangedType = Convert.ChangeType(
+                            propertyValue,
+                            Nullable.GetUnderlyingType(propertyInfo.PropertyType) ??
+                                propertyInfo.PropertyType);
+                        
+                        propertyInfo.SetValue(mapModelInfo.Model, valueWithChangedType, null);
                     }
                     
-                    entities.Add(entity);
+                    entities.Add(mapModelInfo.Model);
                 }
             }
         }
         catch (Exception exc)
         {
-            _logger.LogError("File '{name}' doesn't match the format\n{message}\n{stackTrace}", 
-                file.Name, exc.Message, exc.StackTrace);
+            _logger.LogError("File doesn't match the format\n{message}\n{stackTrace}", 
+                exc.Message, exc.StackTrace);
             
             return FileReadMessages.UnableToRead;
         }

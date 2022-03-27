@@ -39,11 +39,9 @@ public class LoadWeatherDtoValidator : AbstractValidator<LoadWeatherDto>
         CancellationToken cancellationToken)
     {
         await using var stream = file.OpenReadStream();
-        var fileStream = stream as FileStream;
-
-        var error =  _fileService.Validate(fileStream, 4);
+        var error =  _fileService.Validate(stream, 4);
         
-        if(error is FileReadMessages.Normal)
+        if (error is FileReadMessages.Normal)
             return;
 
         var failureMessage = error switch

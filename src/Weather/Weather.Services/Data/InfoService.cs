@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Weather.Infrastructure.Access;
+﻿using Weather.Infrastructure.Access;
 
 namespace Weather.Services.Data;
 
@@ -15,12 +14,16 @@ public class InfoService : IInfoService
     public async Task<IEnumerable<int>> GetAvailableYears()
     {
         var entities = await _repository.WeatherConditions.ListAsync();
-        return entities?.Select(x => x.DateTime.Year);
+        return entities?
+            .Distinct()
+            .Select(x => x.DateTime.Year);
     }
     
     public async Task<IEnumerable<int>> GetAvailableMonths()
     {
         var entities = await _repository.WeatherConditions.ListAsync();
-        return entities?.Select(x => x.DateTime.Month);
+        return entities?
+            .Distinct()
+            .Select(x => x.DateTime.Month);
     }
 }

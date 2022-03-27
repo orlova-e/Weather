@@ -6,7 +6,7 @@ namespace Weather.Services.Files;
 public interface IFileService<T>
     where T : class, IMapModel, new()
 {
-    FileReadMessages Validate(FileStream file, int headerColumns = 1);
+    FileReadMessages Validate(Stream file, int headerColumns = 1);
 
-    FileReadMessages TryReadFile(FileStream file, out IList<T> entities, int headerColumns = 1);
+    FileReadMessages TryReadFile(Stream file, out IList<T> entities, int headerColumns = 1);
 }

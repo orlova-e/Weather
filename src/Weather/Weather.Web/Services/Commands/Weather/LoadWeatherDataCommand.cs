@@ -39,9 +39,7 @@ public class LoadWeatherDataCommand : IRequestHandler<LoadWeatherDataRequest, Co
             foreach (var file in request.Dto.Files)
             {
                 await using var stream = file.OpenReadStream();
-                var fileStream = stream as FileStream;
-
-                _fileService.TryReadFile(fileStream, out IList<WeatherMapModel> mappedModels);
+                _fileService.TryReadFile(stream, out IList<WeatherMapModel> mappedModels, 4);
                 mapModels.AddRange(mappedModels);
             }
 
