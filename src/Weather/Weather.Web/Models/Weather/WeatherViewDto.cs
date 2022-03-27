@@ -1,6 +1,4 @@
-﻿using Weather.Domain.Enums;
-
-namespace Weather.Web.Models.Weather;
+﻿namespace Weather.Web.Models.Weather;
 
 public class WeatherViewDto
 {
