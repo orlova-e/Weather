@@ -45,11 +45,9 @@ public class GetWeatherConditionsCommand : IRequestHandler<GetWeatherConditionsR
             var listDto = new ListDto<WeatherViewDto>()
             {
                 CurrentPage = conditionsRequest.Dto.Page,
-                ItemsPerPage = entities.Count,
+                ItemsPerPage = conditionsRequest.Dto.ItemsNumber,
                 ListSorting = conditionsRequest.Dto.SortDir,
-                TotalPages = (int) Math.Round(
-                    totalEntitiesCount / (double) conditionsRequest.Dto.ItemsNumber, 
-                    MidpointRounding.ToPositiveInfinity),
+                TotalPages = (int) Math.Ceiling((double) totalEntitiesCount / conditionsRequest.Dto.ItemsNumber),
                 TotalItems = totalEntitiesCount,
                 Entities = viewModels
             };
