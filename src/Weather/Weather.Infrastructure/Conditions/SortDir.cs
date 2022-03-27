@@ -1,6 +1,6 @@
 ﻿namespace Weather.Infrastructure.Conditions;
 
-public enum SortBy
+public enum SortDir
 {
     Asc,
     Desc
