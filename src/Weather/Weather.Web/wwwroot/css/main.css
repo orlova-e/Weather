@@ -1,0 +1,12 @@
+﻿.weather-lead-font {
+    font-family: 'PT Sans', sans-serif;
+    text-transform: uppercase;
+}
+
+.weather-btn-style {
+    color: black;
+}
+
+.weather-inline-group .weather-inline-item {
+    margin-right: 1em;
+}
