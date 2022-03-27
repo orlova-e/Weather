@@ -1,0 +1,21 @@
+﻿@using Weather.Services.Data
+@inject IInfoService _infoService
+@model string
+
+<div class="uk-inline">
+    <span class="uk-text-default weather-inline-item">Год:</span>
+    <button class="uk-button uk-button-default weather-inline-item" type="button">
+        <span>2022</span>
+        <span uk-icon="icon: chevron-down"></span>
+    </button>
+    <div uk-dropdown>
+        <ul class="uk-nav uk-dropdown-nav">
+            <li class="uk-active"><a href="#">Active</a></li>
+            <li><a href="#">Item</a></li>
+            <li><a href="#">Item</a></li>
+            <li><a href="#">Item</a></li>
+            <li><a href="#">Item</a></li>
+            <li><a href="#">Item</a></li>
+        </ul>
+    </div>
+</div>

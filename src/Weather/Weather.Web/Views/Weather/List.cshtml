@@ -1,0 +1,88 @@
+﻿@model ListDto<Weather.Web.Models.Weather.WeatherViewDto>
+
+@{
+    ViewBag.Title = "Просмотр";
+    Layout = "_Layout";
+}
+
+@{
+    string GetPageUrl(int number)
+    {
+        return Url.Action("List", "Weather", new { page = number, itemsNumber = Model.ItemsPerPage, sortBy = Model.ListSorting });
+    }
+}
+
+<div class="uk-section-default">
+    <div class="uk-section uk-light uk-background-cover" style="background-image: url(img/patrick-hodskins-ZqsmxFxQyoY-unsplash.jpg)">
+        <div class="uk-container">
+            <h2 class="uk-heading-bullet">Просмотр</h2>
+            <div class="weather-btn-container weather-inline-group">
+                @await Html.PartialAsync("_DateLinksPartial", "year");
+                @await Html.PartialAsync("_DateLinksPartial", "month");
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    @if (Model.TotalItems > 0)
+    {
+        <div class="uk-overflow-auto">
+            <table class="uk-table uk-table-small uk-table-divider uk-table-striped ">
+                <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Время (МСК)</th>
+                    <th>Температура воздуха, &#2103;</th>
+                    <th>Относительная влажность, %</th>
+                    <th>Точка росы, &#2103;</th>
+                    <th>Атмосферное давление, мм рт. ст.</th>
+                    <th>Направление ветра</th>
+                    <th>Скорость ветра, м/с</th>
+                    <th>Облачность, %</th>
+                    <th>Нижняя граница облачности, м</th>
+                    <th>Горизонтальная видимость, км</th>
+                    <th>Погодные явления</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Entities)
+                {
+                    <tr>
+                        <td>@item.DateTime.ToString("d")</td>
+                        <td>@item.DateTime.ToString("t")</td>
+                        <td>@item.Temperature</td>
+                        <td>@item.RelativeHumidity</td>
+                        <td>@item.DewPoint</td>
+                        <td>@item.AtmosphericPressure</td>
+                        <td>@item.WindDirection</td>
+                        <td>@item.WindSpeed</td>
+                        <td>@item.CloudCover</td>
+                        <td>@item.LowerCloudLimit</td>
+                        <td>@item.HorizontalVisibility</td>
+                        <td>@item.Phenomena</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+
+        <ul class="uk-pagination uk-flex-center" uk-margin>
+            @{
+                if (Model.CurrentPage > 1)
+                {
+                    <li><a href="@GetPageUrl(Model.CurrentPage - 1)"><span uk-pagination-previous></span></a></li>
+                }
+                for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    string active = "uk-active";
+                    <li class="@active"><a href="@GetPageUrl(i)">@i</a></li>
+                }
+                if (Model.CurrentPage < Model.TotalPages)
+                {
+                    <li><a href="@GetPageUrl(Model.CurrentPage + 1)"><span uk-pagination-next></span></a></li>
+                }
+            }
+        </ul>
+    }
+</div>

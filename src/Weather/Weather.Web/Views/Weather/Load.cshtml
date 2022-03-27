@@ -1,0 +1,27 @@
+﻿@model Weather.Web.Models.Weather.LoadWeatherDto
+
+@{
+    ViewBag.Title = "Загрузка";
+    Layout = "_Layout";
+}
+
+<div class="uk-section uk-section-largemuted uk-section-secondary uk-light">
+    <div class="uk-container">
+        <h2 class="uk-heading-bullet">Загрузка</h2>
+        <div class="uk-grid-match uk-child-width-1@m" uk-grid>
+            <div>
+                <p>Загрузите данные о погодных условиях г. Москва в формате Microsoft Excel (.xlsx или .xls)</p>
+            </div>
+            <form asp-controller="Weather" asp-action="Load" enctype="multipart/form-data" method="post">
+                <div class="uk-inline">
+                    <div uk-form-custom>
+                        <input asp-for="Files" type="file" accept=".xlsx, .xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" multiple>
+                        <button class="uk-button uk-button-default" type="button" tabindex="-1">Выбрать</button>
+                        <span asp-validation-for="Files"></span>
+                    </div>
+                    <button class="uk-button uk-button-secondary" type="submit">Отправить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
