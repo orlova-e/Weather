@@ -8,8 +8,7 @@ var services = builder.Services;
 services
     .AddInfrastructure(builder.Configuration)
     .AddServices()
-    .AddWebServices()
-    .AddControllersWithViews();
+    .AddWebServices(builder.Configuration);
 
 var app = builder.Build();
 
