@@ -37,7 +37,7 @@ public class Repository<T> : IEntityRepository<T>
     {
         return _context
             .Set<T>()
-            .Skip(page)
+            .Skip(page * count)
             .Take(count)
             .ToListAsync();
     }
