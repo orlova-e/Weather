@@ -62,10 +62,5 @@ public class WeatherConditionConfiguration : IEntityTypeConfiguration<WeatherCon
             .Property(x => x.Phenomena)
             .HasColumnType("text")
             .IsRequired(false);
-
-        builder
-            .HasOne(x => x.City)
-            .WithMany(x => x.WeatherConditions)
-            .HasForeignKey(x => x.CityId);
     }
 }

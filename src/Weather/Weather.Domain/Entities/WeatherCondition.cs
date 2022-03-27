@@ -16,6 +16,4 @@ public class WeatherCondition : IEntity
     public int LowerCloudLimit { get; set; }
     public int? HorizontalVisibility { get; set; }
     public string Phenomena { get; set; }
-    public Guid CityId { get; set; }
-    public City City { get; set; }
 }
