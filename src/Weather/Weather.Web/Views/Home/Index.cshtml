@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "Главная";
+}
+
+<div class="uk-section uk-section-largemuted">
+    <div class="uk-container">
+        <h2 class="uk-heading-bullet">Данные о погоде</h2>
+        <div class="uk-grid-match uk-child-width-1@m" uk-grid>
+            <div>
+                <p>База данных располагает широкими измерениями погоды за день</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a class="uk-link-toggle" asp-controller="Weather" asp-action="List">
+    <div class="uk-section-default">
+        <div class="uk-section uk-light uk-background-cover" style="background-image: url(img/patrick-hodskins-ZqsmxFxQyoY-unsplash.jpg)">
+            <div class="uk-container">
+                <h2 class="uk-heading-bullet">Просмотр</h2>
+                <div class="uk-grid-match uk-child-width-1-1@m" uk-grid>
+                    <div>
+                        <p>Нажмите, чтобы просмотреть данные о погоде</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>        
+</a>
+
+<a class="uk-link-toggle" asp-controller="Weather" asp-action="Load">
+    <div class="uk-section uk-section-largemuted uk-section-secondary uk-light">
+        <div class="uk-container">
+            <h2 class="uk-heading-bullet">Загрузка</h2>
+            <div class="uk-grid-match uk-child-width-1@m" uk-grid>
+                <div>
+                    <p>Загрузите данные о погодных условиях г. Москва в формате Microsoft Excel (.xlsx или .xls)</p>
+                </div>
+            </div>
+        </div>
+    </div>       
+</a>
