@@ -1,56 +1,25 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Weather.Domain.Entities;
+﻿using Weather.Domain.Entities;
 using Weather.Infrastructure.Mappings;
 
 namespace Weather.Infrastructure.Access;
 
-public class Repository<T> : IEntityRepository<T>
-    where T : class, IEntity
+public class Repository : IRepository
 {
     private readonly Context _context;
+    private IEntityRepository<WeatherCondition> _weatherConditions;
 
     public Repository(Context context)
     {
         _context = context;
     }
 
-    public async Task<T> GetAsync(Guid id)
+    public IEntityRepository<WeatherCondition> WeatherConditions
     {
-        return await _context.FindAsync<T>(id);
-    }
-
-    public Task<int> CountAsync()
-    {
-        return _context.Set<T>().CountAsync();
-    }
-
-    public Task<List<T>> ListAsync()
-    {
-        return _context.Set<T>().ToListAsync();
-    }
-
-    public Task<List<T>> ListAsync(
-        int page,
-        int count,
-        string sortField,
-        bool asc = true)
-    {
-        return _context
-            .Set<T>()
-            .Skip(page * count)
-            .Take(count)
-            .ToListAsync();
-    }
-
-    public Task CreateAsync(T entity)
-    {
-        _context.Add(entity);
-        return _context.SaveChangesAsync();
-    }
-
-    public Task CreateAsync(IEnumerable<T> entities)
-    {
-        _context.AddRange(entities);
-        return _context.SaveChangesAsync();
+        get
+        {
+            if (_weatherConditions is null)
+                _weatherConditions = new EntityRepository<WeatherCondition>(_context);
+            return _weatherConditions;
+        }
     }
 }
