@@ -1,13 +1,10 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Weather.Domain.Entities;
 using Weather.Infrastructure.Access;
 using Weather.Infrastructure.Helpers;
 using Weather.Services.Data;
-using Weather.Services.Files;
-using Weather.Web.Models.Common;
 using Weather.Web.Models.Weather;
 
 namespace Weather.Web.Services.Commands.Weather;
