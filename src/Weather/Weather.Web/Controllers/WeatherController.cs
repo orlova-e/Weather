@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Weather.Web.Models.Common;
 using Weather.Web.Models.Weather;
 using Weather.Web.Services.Commands.Weather;
+using Weather.Web.Services.Commands;
 
 namespace Weather.Web.Controllers;
 
@@ -22,8 +23,8 @@ public class WeatherController : Controller
         if (!ModelState.IsValid)
             return View(dto);
         
-        await _mediator.Send(new LoadWeatherDataRequest(dto));
-        return RedirectToAction("List");
+        var result = await _mediator.Send(new LoadWeatherDataRequest(dto));
+        return this.Redirect(result, "List", "Weather");
     }
     
     [HttpGet]
@@ -38,6 +39,6 @@ public class WeatherController : Controller
     public async Task<IActionResult> ListAsync([FromQuery] GetEntitiesDto dto)
     {
         var result = await _mediator.Send(new GetWeatherConditionsRequest(dto));
-        return View(result.Result);
+        return this.AsViewResult(result);
     }
 }
