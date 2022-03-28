@@ -48,7 +48,6 @@ public static class FilterParser
         
         filters.TryAdd(property, value);
         return filters.AsString();
-        //return string.Join(";", filters.Select(x => x.Key + "=" + x.Value).ToArray());
     }
 
     public static string RemoveFromFilter(string filter, string property)
@@ -73,10 +72,7 @@ public static class FilterParser
     {
         if (filters is null || !filters.Any())
             return string.Empty;
-
-        var selection = filters.Select(x => x.Key + "=" + x.Value).ToList();
-        var join = string.Join(";", selection);
-        return join;
+        
         return string.Join(";", filters.Select(x => x.Key + "=" + x.Value));
     }
 }

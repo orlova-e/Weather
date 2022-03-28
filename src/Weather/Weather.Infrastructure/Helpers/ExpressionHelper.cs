@@ -1,0 +1,59 @@
+﻿using System.ComponentModel;
+using System.Linq.Expressions;
+using System.Reflection;
+using Weather.Infrastructure.Conditions;
+
+namespace Weather.Infrastructure.Helpers;
+
+public static class ExpressionHelper
+{
+    public static Expression<Func<T, bool>> BuildExpression<T>(string propertyName, string value)
+    {
+        var parameter = Expression.Parameter(typeof(T), "x");
+        
+        var property = Expression.Property(parameter, propertyName);
+        var constant = GetValueExpression(propertyName, value, parameter);
+        
+        var body = Expression.Equal(property, constant);
+        var final = Expression.Lambda<Func<T, bool>>(body, parameter);
+        
+        return final;
+    }
+    
+    public static IQueryable<T> OrderBy<T>(
+        this IQueryable<T> source,
+        string orderByProperty,
+        SortDir sortDir)
+    {
+        var type = typeof(T);
+        var property = type.GetProperty(orderByProperty);
+        var parameter = Expression.Parameter(type, "p");
+        var propertyAccess = Expression.MakeMemberAccess(parameter, property);
+        var orderByExpession = Expression.Lambda(propertyAccess, parameter);
+
+        var orderMethodName = sortDir == SortDir.Asc ? nameof(Queryable.OrderBy) : nameof(Queryable.OrderByDescending);
+        
+        MethodCallExpression resultExpression = Expression.Call(
+            typeof(Queryable),
+            orderMethodName,
+            new Type[] { type, property.PropertyType },
+            source.Expression,
+            Expression.Quote(orderByExpession));
+        
+        return source.Provider.CreateQuery<T>(resultExpression);
+    }
+
+    private static UnaryExpression GetValueExpression(string propertyName, string value, ParameterExpression parameter)
+    {
+        var member = Expression.Property(parameter, propertyName);
+        var propertyType = ((PropertyInfo) member.Member).PropertyType;
+        
+        var converter = TypeDescriptor.GetConverter(propertyType);
+        if (!converter.CanConvertFrom(typeof(string)))
+            throw new NotSupportedException();
+        var propertyValue = converter.ConvertFromInvariantString(value);
+        
+        var constant = Expression.Constant(propertyValue);
+        return Expression.Convert(constant, propertyType);
+    }
+}
