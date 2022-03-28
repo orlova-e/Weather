@@ -1,14 +1,22 @@
-﻿@model ListDto<Weather.Web.Models.Weather.WeatherViewDto>
+﻿@using Weather.Services.Data
+@inject IInfoService _infoService
+@model WeatherListDto
 
 @{
     ViewBag.Title = "Просмотр";
     Layout = "_Layout";
 }
 
-@{
-    string GetPageUrl(int number)
+@functions{
+    string GetPageUrl(int page)
     {
-        return Url.Action("List", "Weather", new { page = number, itemsNumber = Model.ItemsPerPage, sortBy = Model.ListSorting });
+        return Url.Action("List", "Weather", new
+        {
+            page = page,
+            itemsNumber = Model.ItemsPerPage,
+            sortDir = Model.ListSorting,
+            filters = Model.Filters
+        });
     }
 }
 
@@ -17,8 +25,7 @@
         <div class="uk-container">
             <h2 class="uk-heading-bullet">Просмотр</h2>
             <div class="weather-btn-container weather-inline-group">
-                @await Html.PartialAsync("_DateLinksPartial", "year")
-                @await Html.PartialAsync("_DateLinksPartial", "month")
+                @await Html.PartialAsync("_DateLinksPartial", Model)
             </div>
         </div>
     </div>

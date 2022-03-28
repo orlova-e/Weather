@@ -1,21 +1,77 @@
 ﻿@using Weather.Services.Data
+@using Weather.Infrastructure.Helpers
+@using Weather.Domain.Entities
+
 @inject IInfoService _infoService
-@model string
+
+@model WeatherListDto
+
+@{
+    string year = nameof(WeatherCondition.Year);
+    string month = nameof(WeatherCondition.Month);
+    const string notSpecified = "Не выбрано";
+
+    FilterParser.TryParseFilter(Model.Filters, out Dictionary<string, string> filters);
+    var currentYear = filters?.GetValueOrDefault(year) ?? notSpecified;
+    var currentMonth = filters?.GetValueOrDefault(month) ?? notSpecified;
+}
+
+@functions{
+    string GetPageUrl(string property, int value)
+    {
+        var filters = FilterParser.InsertIntoFilter(Model.Filters, property, value.ToString());
+        return Url.Action("List", "Weather", new
+        {
+            page = Model.CurrentPage,
+            itemsNumber = Model.ItemsPerPage,
+            sortDir = Model.ListSorting,
+            filters = filters
+        });
+    }
+    
+    string GetPageUrlWithoutFilter(string property)
+    {
+        return Url.Action("List", "Weather", new
+        {
+            page = Model.CurrentPage,
+            itemsNumber = Model.ItemsPerPage,
+            sortDir = Model.ListSorting,
+            filters = FilterParser.RemoveFromFilter(Model.Filters, property)
+        });
+    }
+}
 
 <div class="uk-inline">
     <span class="uk-text-default weather-inline-item">Год:</span>
     <button class="uk-button uk-button-default weather-inline-item" type="button">
-        <span>2022</span>
+        <span>@currentYear</span>
         <span uk-icon="icon: chevron-down"></span>
     </button>
     <div uk-dropdown>
         <ul class="uk-nav uk-dropdown-nav">
-            <li class="uk-active"><a href="#">Active</a></li>
-            <li><a href="#">Item</a></li>
-            <li><a href="#">Item</a></li>
-            <li><a href="#">Item</a></li>
-            <li><a href="#">Item</a></li>
-            <li><a href="#">Item</a></li>
+            <li><a href="@GetPageUrlWithoutFilter(year)">Не выбрано</a></li>
+            @foreach (var item in Model.AvailableYears)
+            {
+                <li><a href="@GetPageUrl(year, item)">@item</a></li>
+            }
+        </ul>
+    </div>
+</div>
+
+<div class="uk-inline">
+    <span class="uk-text-default weather-inline-item">Месяц:</span>
+    <button class="uk-button uk-button-default weather-inline-item" type="button">
+        <span>@currentMonth</span>
+        <span uk-icon="icon: chevron-down"></span>
+    </button>
+    <div uk-dropdown>
+        <ul class="uk-nav uk-dropdown-nav">
+            <li><a href="@GetPageUrlWithoutFilter(month)">Не выбрано</a></li>
+            @foreach (var item in Model.AvailableMonths)
+            {
+                var link = GetPageUrl(month, item);
+                <li><a href="@GetPageUrl(month, item)">@item</a></li>
+            }
         </ul>
     </div>
 </div>
