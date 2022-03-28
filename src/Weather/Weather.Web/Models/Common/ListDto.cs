@@ -10,4 +10,5 @@ public class ListDto<T>
     public int TotalPages { get; set; }
     public SortDir ListSorting { get; set; }
     public IEnumerable<T> Entities { get; set; }
+    public string Filters { get; set; }
 }
