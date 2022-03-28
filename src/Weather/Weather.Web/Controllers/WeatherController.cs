@@ -23,7 +23,7 @@ public class WeatherController : Controller
             return View(dto);
         
         await _mediator.Send(new LoadWeatherDataRequest(dto));
-        return RedirectToAction("Load");
+        return RedirectToAction("List");
     }
     
     [HttpGet]
