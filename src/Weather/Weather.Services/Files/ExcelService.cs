@@ -17,12 +17,6 @@ public class ExcelService<T> : IFileService<T>
         _logger = logger;
     }
 
-    private static MethodInfo CachedPropertiesMethod { get; } = 
-        typeof(ExcelService<T>).GetMethod(nameof(ExcelService<T>.GetProperties));
-
-    private static Func<MapModelInfo<T>> GetPropertiesCachedDelegate { get; } =
-        (Func<MapModelInfo<T>>) Delegate.CreateDelegate(typeof(Func<MapModelInfo<T>>), CachedPropertiesMethod);
-
     private static MapModelInfo<T> GetProperties<T>()
         where T : class, IMapModel, new()
     {
@@ -89,7 +83,6 @@ public class ExcelService<T> : IFileService<T>
                     if(r <= headerColumns)
                         continue;
 
-                    // var mapModelInfo = GetPropertiesCachedDelegate();
                     var mapModelInfo = GetProperties<T>();
 
                     var row = sheet.GetRow(r);
@@ -119,7 +112,6 @@ public class ExcelService<T> : IFileService<T>
                             _ => throw new TypeInitializationException(propertyInfo.PropertyType.FullName, null)
                         };
 
-                        // dynamic valueWithChangedType;
                         if (propertyValue is string && 
                             string.IsNullOrWhiteSpace(propertyValue))
                         {
@@ -132,7 +124,6 @@ public class ExcelService<T> : IFileService<T>
                             continue;
                         }
                         
-                        // var propertyValue = cells[c].StringCellValue;
                         var valueWithChangedType = Convert.ChangeType(
                             propertyValue,
                             Nullable.GetUnderlyingType(propertyInfo.PropertyType) ??
