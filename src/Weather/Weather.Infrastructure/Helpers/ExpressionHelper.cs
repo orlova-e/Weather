@@ -7,7 +7,31 @@ namespace Weather.Infrastructure.Helpers;
 
 public static class ExpressionHelper
 {
-    public static Expression<Func<T, bool>> BuildExpression<T>(string propertyName, string value)
+    public static Expression<Func<T, bool>> Build<T>(string filter)
+    {
+        Expression<Func<T, bool>> expression = null;
+        if (FilterParser.TryParseFilter(filter, out Dictionary<string, string> filters))
+        {
+            for (int i = 0; i < filters.Count; i++)
+            {
+                var right = ExpressionHelper.BuildExpression<T>(
+                    filters.ElementAt(i).Key,
+                    filters.ElementAt(i).Value);
+                    
+                if (i == 0)
+                {
+                    expression = right;
+                    continue;
+                }
+
+                expression = expression.And(right);
+            }
+        }
+
+        return expression;
+    }
+
+    static Expression<Func<T, bool>> BuildExpression<T>(string propertyName, string value)
     {
         var parameter = Expression.Parameter(typeof(T), "x");
         

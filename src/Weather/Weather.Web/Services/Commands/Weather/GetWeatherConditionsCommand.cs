@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Weather.Domain.Entities;
 using Weather.Infrastructure.Access;
@@ -36,26 +35,8 @@ public class GetWeatherConditionsCommand : IRequestHandler<GetWeatherConditionsR
 
         try
         {
-            Expression<Func<WeatherCondition, bool>> expression = null;
-            if (FilterParser.TryParseFilter(request.Dto.Filters, out Dictionary<string, string> filters))
-            {
-                for (int i = 0; i < filters.Count; i++)
-                {
-                    var right = ExpressionHelper.BuildExpression<WeatherCondition>(
-                        filters.ElementAt(i).Key,
-                        filters.ElementAt(i).Value);
-                    
-                    if (i == 0)
-                    {
-                        expression = right;
-                        continue;
-                    }
+            var expression = ExpressionHelper.Build<WeatherCondition>(request.Dto.Filters);
 
-                    expression = expression.And(right);
-                }
-            }
-            
-            
             var entities = await _repository.WeatherConditions.List(
                 wherePredicate: expression,
                 orderByKey: request.Dto.OrderBy ?? nameof(WeatherCondition.DateTime),
