@@ -55,7 +55,7 @@ public class ExcelService<T> : IFileService<T>
     public FileReadMessages TryReadFile(
         Stream file,
         out IList<T> entities,
-        int headerColumns = 1)
+        int skipRows = 1)
     {
         entities = new List<T>();
         IWorkbook workbook;
@@ -78,9 +78,9 @@ public class ExcelService<T> : IFileService<T>
             {
                 var sheet = workbook.GetSheetAt(s);
                 
-                for (int r = 1; r <= sheet.LastRowNum; r++)
+                for (int r = 0; r <= sheet.LastRowNum; r++)
                 {
-                    if(r <= headerColumns)
+                    if(r < skipRows)
                         continue;
 
                     var mapModelInfo = GetProperties<T>();
