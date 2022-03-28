@@ -20,6 +20,9 @@ public class LoadWeatherDtoValidator : AbstractValidator<LoadWeatherDto>
         _options = options;
         _fileService = fileService;
 
+        RuleFor(x => x.Files)
+            .NotEmpty();
+
         RuleForEach(x => x.Files)
             .NotEmpty()
             .Must(IsFileExtensionValid)
