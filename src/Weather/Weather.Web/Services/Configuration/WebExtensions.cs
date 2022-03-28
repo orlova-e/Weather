@@ -1,4 +1,5 @@
-﻿using FluentValidation.AspNetCore;
+﻿using System.Globalization;
+using FluentValidation.AspNetCore;
 using MediatR;
 using Weather.Web.Models.Configuration;
 using Weather.Web.Services.Commands.Weather;
@@ -12,6 +13,10 @@ public static class WebExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        var cultureInfo = new CultureInfo("ru-RU");
+        CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+        CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+        
         services
             .AddMvc()
             .AddFluentValidation(f =>
