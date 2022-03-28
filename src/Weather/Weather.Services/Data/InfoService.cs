@@ -15,15 +15,17 @@ public class InfoService : IInfoService
     {
         var entities = await _repository.WeatherConditions.ListAsync();
         return entities?
-            .Distinct()
-            .Select(x => x.DateTime.Year);
+            .OrderByDescending(x => x.DateTime.Year)
+            .Select(x => x.DateTime.Year)
+            .Distinct();
     }
     
     public async Task<IEnumerable<int>> GetAvailableMonths()
     {
         var entities = await _repository.WeatherConditions.ListAsync();
         return entities?
-            .Distinct()
-            .Select(x => x.DateTime.Month);
+            .OrderByDescending(x => x.DateTime.Month)
+            .Select(x => x.DateTime.Month)
+            .Distinct();
     }
 }
