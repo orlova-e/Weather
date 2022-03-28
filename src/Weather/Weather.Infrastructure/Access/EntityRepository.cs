@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using Weather.Domain.Entities;
+using Weather.Infrastructure.Conditions;
 using Weather.Infrastructure.Mappings;
+using Weather.Infrastructure.Helpers;
 
 namespace Weather.Infrastructure.Access;
 
@@ -14,31 +17,44 @@ public class EntityRepository<T> : IEntityRepository<T>
         _context = context;
     }
 
-    public async Task<T> GetAsync(Guid id)
-    {
-        return await _context.FindAsync<T>(id);
-    }
-
     public Task<int> CountAsync()
     {
         return _context.Set<T>().CountAsync();
     }
 
-    public Task<List<T>> ListAsync()
+    public Task<int> CountAsync(Expression<Func<T, bool>> wherePredicate)
     {
-        return _context.Set<T>().ToListAsync();
-    }
-
-    public Task<List<T>> ListAsync(
-        int page,
-        int count,
-        string sortField,
-        bool asc = true)
-    {
+        wherePredicate ??= x => true;
+        
         return _context
             .Set<T>()
-            .Skip(page * count)
-            .Take(count)
+            .Where(wherePredicate)
+            .CountAsync();
+    }
+
+    public async Task<List<T>> ListAsync()
+    {
+        return await _context
+            .Set<T>()
+            .Where(x => true)
+            .ToListAsync();
+    }
+    
+    public Task<List<T>> List(
+        string orderByKey,
+        SortDir sortDir = SortDir.Asc,
+        Expression<Func<T, bool>> wherePredicate = null,
+        int skip = 1,
+        int take = 20)
+    {
+        wherePredicate ??= x => true;
+        
+        return _context
+            .Set<T>()
+            .Where(wherePredicate)
+            .OrderBy<T>(orderByKey, sortDir)
+            .Skip(skip)
+            .Take(take)
             .ToListAsync();
     }
 
