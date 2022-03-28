@@ -17,9 +17,10 @@
                     <div uk-form-custom>
                         <input asp-for="Files" type="file" accept=".xlsx, .xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" multiple>
                         <button class="uk-button uk-button-default" type="button" tabindex="-1">Выбрать</button>
-                        <span asp-validation-for="Files"></span>
                     </div>
                     <button class="uk-button uk-button-secondary" type="submit">Отправить</button>
+                    <br/>
+                    <span class="uk-text-danger" asp-validation-for="Files"></span>
                 </div>
             </form>
         </div>
