@@ -11,6 +11,8 @@ public class WeatherMapModelToWeatherConditionMap : Profile
         CreateMap<WeatherMapModel, WeatherCondition>()
             .ForMember(x => x.Id, o => o.Ignore())
             .ForMember(x => x.DateTime, o => o.MapFrom(x => new DateTime(x.Date.Date.Ticks + x.Time.TimeOfDay.Ticks)))
+            .ForMember(x => x.Month, o => o.MapFrom(x => x.Date.Month))
+            .ForMember(x => x.Year, o => o.MapFrom(x => x.Date.Year))
             .ForMember(x => x.Temperature, o => o.MapFrom(x => x.Temperature))
             .ForMember(x => x.RelativeHumidity, o => o.MapFrom(x => x.RelativeHumidity))
             .ForMember(x => x.DewPoint, o => o.MapFrom(x => x.DewPoint))

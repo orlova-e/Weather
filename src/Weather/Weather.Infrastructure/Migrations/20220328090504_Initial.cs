@@ -15,6 +15,8 @@ namespace Weather.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     DateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Month = table.Column<int>(type: "integer", nullable: false),
+                    Year = table.Column<int>(type: "integer", nullable: false),
                     Temperature = table.Column<double>(type: "double precision", nullable: false),
                     RelativeHumidity = table.Column<double>(type: "double precision", nullable: false),
                     DewPoint = table.Column<double>(type: "double precision", nullable: false),

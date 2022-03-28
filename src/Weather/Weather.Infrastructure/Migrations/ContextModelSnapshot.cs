@@ -46,6 +46,9 @@ namespace Weather.Infrastructure.Migrations
                     b.Property<int>("LowerCloudLimit")
                         .HasColumnType("integer");
 
+                    b.Property<int>("Month")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Phenomena")
                         .HasColumnType("text");
 
@@ -59,6 +62,9 @@ namespace Weather.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<int>("WindSpeed")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Year")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");

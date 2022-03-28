@@ -10,6 +10,8 @@ public class WeatherConditionToWeatherViewDtoMap : Profile
     {
         CreateMap<WeatherCondition, WeatherViewDto>()
             .ForMember(x => x.DateTime, o => o.MapFrom(x => x.DateTime))
+            .ForMember(x => x.Month, o => o.MapFrom(x => x.Month))
+            .ForMember(x => x.Year, o => o.MapFrom(x => x.Year))
             .ForMember(x => x.Temperature, o => o.MapFrom(x => x.Temperature))
             .ForMember(x => x.RelativeHumidity, o => o.MapFrom(x => x.RelativeHumidity))
             .ForMember(x => x.DewPoint, o => o.MapFrom(x => x.DewPoint))

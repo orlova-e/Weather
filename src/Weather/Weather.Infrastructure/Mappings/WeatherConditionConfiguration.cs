@@ -12,6 +12,16 @@ public class WeatherConditionConfiguration : IEntityTypeConfiguration<WeatherCon
             .Property(x => x.DateTime)
             .HasColumnType("timestamp without time zone")
             .IsRequired();
+        
+        builder
+            .Property(x => x.Month)
+            .HasColumnType("integer")
+            .IsRequired();
+        
+        builder
+            .Property(x => x.Year)
+            .HasColumnType("integer")
+            .IsRequired();
 
         builder
             .Property(x => x.Temperature)

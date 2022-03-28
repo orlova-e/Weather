@@ -10,9 +10,6 @@ public class Context : DbContext
     public Context(DbContextOptions<Context> options) : base(options)
     {
         Database.EnsureCreated();
-
-        var migrs = Database.GetMigrations();
-        
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

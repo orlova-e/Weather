@@ -4,6 +4,8 @@ public class WeatherCondition : IEntity
 {
     public Guid Id { get; set; }
     public DateTime DateTime { get; set; }
+    public int Month { get; set; }
+    public int Year { get; set; }
     public decimal Temperature { get; set; }
     public decimal RelativeHumidity { get; set; }
     public decimal DewPoint { get; set; }

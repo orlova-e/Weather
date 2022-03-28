@@ -12,7 +12,7 @@ using Weather.Infrastructure.Mappings;
 namespace Weather.Infrastructure.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20220327155700_Initial")]
+    [Migration("20220328090504_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,6 +48,9 @@ namespace Weather.Infrastructure.Migrations
                     b.Property<int>("LowerCloudLimit")
                         .HasColumnType("integer");
 
+                    b.Property<int>("Month")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Phenomena")
                         .HasColumnType("text");
 
@@ -61,6 +64,9 @@ namespace Weather.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<int>("WindSpeed")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Year")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
