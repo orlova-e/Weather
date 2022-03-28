@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.Extensions.Options;
 using Weather.Domain.Entities;
 using Weather.Infrastructure.Access;
 using Weather.Services.Files;
 using Weather.Services.MappedModels;
+using Weather.Web.Models.Configuration;
 
 namespace Weather.Web.Services.Commands.Weather;
 
@@ -11,17 +13,20 @@ public class LoadWeatherDataCommand : IRequestHandler<LoadWeatherDataRequest, Co
 {
     private readonly IRepository _repository;
     private readonly IFileService<WeatherMapModel> _fileService;
+    private readonly IOptions<FileSettings> _options;
     private readonly IMapper _mapper;
     private readonly ILogger<LoadWeatherDataCommand> _logger;
 
     public LoadWeatherDataCommand(
         IRepository repository,
         IFileService<WeatherMapModel> fileService,
+        IOptions<FileSettings> options,
         IMapper mapper,
         ILogger<LoadWeatherDataCommand> logger)
     {
         _repository = repository;
         _fileService = fileService;
+        _options = options;
         _mapper = mapper;
         _logger = logger;
     }
@@ -39,7 +44,7 @@ public class LoadWeatherDataCommand : IRequestHandler<LoadWeatherDataRequest, Co
             foreach (var file in request.Dto.Files)
             {
                 await using var stream = file.OpenReadStream();
-                _fileService.TryReadFile(stream, out IList<WeatherMapModel> mappedModels, 4);
+                _fileService.TryReadFile(stream, out IList<WeatherMapModel> mappedModels, _options.Value.SkipRows);
                 mapModels.AddRange(mappedModels);
             }
 

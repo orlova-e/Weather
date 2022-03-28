@@ -10,11 +10,11 @@ namespace Weather.Web.Services.Validation.Weather;
 
 public class LoadWeatherDtoValidator : AbstractValidator<LoadWeatherDto>
 {
-    private readonly IOptions<ValidationOptions> _options;
+    private readonly IOptions<FileSettings> _options;
     private readonly IFileService<WeatherMapModel> _fileService;
 
     public LoadWeatherDtoValidator(
-        IOptions<ValidationOptions> options,
+        IOptions<FileSettings> options,
         IFileService<WeatherMapModel> fileService)
     {
         _options = options;
@@ -33,7 +33,7 @@ public class LoadWeatherDtoValidator : AbstractValidator<LoadWeatherDto>
     private bool IsFileExtensionValid(IFormFile file)
     {
         var extension = Path.GetExtension(file.FileName);
-        return _options.Value.File.Extensions.Contains(extension);
+        return _options.Value.Extensions.Contains(extension);
     }
 
     private async Task CanBeWritten(
@@ -42,7 +42,7 @@ public class LoadWeatherDtoValidator : AbstractValidator<LoadWeatherDto>
         CancellationToken cancellationToken)
     {
         await using var stream = file.OpenReadStream();
-        var error =  _fileService.Validate(stream, 4);
+        var error =  _fileService.Validate(stream, _options.Value.SkipRows);
         
         if (error is FileReadMessages.Normal)
             return;

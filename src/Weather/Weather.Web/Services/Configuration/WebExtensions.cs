@@ -13,17 +13,13 @@ public static class WebExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var cultureInfo = new CultureInfo("ru-RU");
-        CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
-        CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
-        
         services
             .AddMvc()
             .AddFluentValidation(f =>
                 f.RegisterValidatorsFromAssemblyContaining<LoadWeatherDtoValidator>()).Services
             .AddAutoMapper(typeof(Program).Assembly)
             .AddMediatR(typeof(GetWeatherConditionsRequest).Assembly)
-            .Configure<ValidationOptions>(configuration.GetSection(nameof(ValidationOptions)));
+            .Configure<FileSettings>(configuration.GetSection(nameof(FileSettings)));
         
         return services;
     }
