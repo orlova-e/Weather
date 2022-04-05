@@ -1,0 +1,36 @@
+version: '3.2'
+services:
+  weather-nginx:
+    networks:
+      - weather-network
+    container_name: weather-nginx
+    image: nginx:1.21.5
+    ports: 
+      - "3000:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - weather-backend
+
+  weather-backend:
+    networks:
+      - weather-network
+    container_name: weather-backend
+    build:
+      context: ./../Weather
+      dockerfile: ./Dockerfile.Web
+    depends_on:
+      - weather-db
+    env_file: backend.env
+
+  weather-db:
+    networks:
+      - weather-network
+    image: postgres:14.1
+    container_name: weather-db
+    ports:
+      - "5432"
+    env_file: postgres.env
+
+networks:
+  weather-network:

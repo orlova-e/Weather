@@ -1,0 +1,24 @@
+﻿FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+WORKDIR /app
+
+COPY *.sln .
+COPY Weather.Domain/*.csproj ./Weather.Domain/
+COPY Weather.Infrastructure/*.csproj ./Weather.Infrastructure/
+COPY Weather.Services/*.csproj ./Weather.Services/
+COPY Weather.Web/*.csproj ./Weather.Web/
+
+RUN dotnet restore
+
+COPY Weather.Domain/. ./Weather.Domain/
+COPY Weather.Infrastructure/. ./Weather.Infrastructure/
+COPY Weather.Services/. ./Weather.Services/
+COPY Weather.Web/. ./Weather.Web/
+
+WORKDIR /app/Weather.Web
+RUN dotnet publish -c Release -o out
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
+WORKDIR /app
+
+COPY --from=build-env /app/Weather.Web/out ./
+ENTRYPOINT [ "dotnet", "Weather.Web.dll" ]
